@@ -6,6 +6,9 @@ app.get('/',(req,res)=>{
     res.status(200).json({message:"Hello Express is Here",port:8000})
 })
 
+app.post('/',(req,res)=>{
+    res.status(200).send("Posted the data")
+})
 
 
 

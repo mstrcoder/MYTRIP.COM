@@ -7,7 +7,7 @@ const user=require('./controllers/user')
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
 app.use(express.json());
-
+app.use(express.static(`${__dirname}/starter/public`));
 
 
 app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
@@ -29,12 +29,8 @@ app
   .delete(user.DeleteOneUser);
 
 
-app.listen(8000, () => {
-  console.log("server listening on Port 8000");
-});
 
-
-
+module.exports =app;
 
 
 

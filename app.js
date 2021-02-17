@@ -4,6 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const tour = require("./controllers/tour");
 const user = require("./controllers/user");
+const querystring = require('querystring');
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
 app.use(express.json());

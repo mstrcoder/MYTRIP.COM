@@ -2,38 +2,32 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const morgan = require("morgan");
-const tour=require('./controllers/tour')
-const user=require('./controllers/user')
+const tour = require("./controllers/tour");
+const user = require("./controllers/user");
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
 app.use(express.json());
 app.use(express.static(`${__dirname}/starter/public`));
 
-
 app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
-app
-  .route("/api/v1/tours/:id")
-  .get(tour.GetOneTour)
-  .patch(tour.UpdateOneTour)
-  .delete(tour.DeleteOneTour);
+app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour).delete(tour.DeleteOneTour);
+// // app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour);
+// app
+//   .route("/api/v1/tours/:id")
+//   .get(tour.GetOneTour)
+//   .patch(tour.UpdateOneTour)
+//   .delete(tour.DeleteOneTour);
 
 // app.route("/api/v1/users").get((req, res) => {});
 
+// app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewUser);
+// app
+//   .route("/api/v1/tours/:id")
+//   .get(tour.GetOneTour)
+//   .patch(tour.UpdateOneTour)
+//   .delete(tour.DeleteOneTour);
 
-
-app.route("/api/v1/users").get(user.GetAllUser).post(user.CreateNewUser);
-app
-  .route("/api/v1/users/:id")
-  .get(user.GetOneUser)
-  .patch(user.UpdateOneUser)
-  .delete(user.DeleteOneUser);
-
-
-
-module.exports =app;
-
-
-
+module.exports = app;
 
 ///creating own middle ware
 

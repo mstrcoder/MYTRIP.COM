@@ -9,8 +9,12 @@ const querystring = require('querystring');
 //used to add iddleware
 app.use(express.json());
 app.use(express.static(`${__dirname}/starter/public`));
+app.route('/api/v1/tours/top-5-cheap').get(tour.topfivecheapesttour,tour.GetAllTour);
+
 
 app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
+
+
 app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour).delete(tour.DeleteOneTour);
 // // app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour);
 // app

@@ -3,8 +3,18 @@ const fs = require("fs");
 const Tour = require("./../models/tourmodel");
 const app = express();
 const morgan = require("morgan");
+const API=require('./../utilities/apifeatures') 
 //used to add iddleware
 app.use(express.json());
+
+//creaing a middle ware for the top 5 cheapest Tour
+exports.topfivecheapesttour = (req, res, next) => {
+  req.query.limit = "5";
+  req.query.sort = "-ratingAverage,price";
+  req.query.fields = "name,price,ratingAverage,summary";
+  next();
+};
+
 
 ///creating own middle ware
 
@@ -21,82 +31,17 @@ app.use(express.json());
 
 const GetAllTour = async (req, res) => {
   try {
-    // we need a hard copy of that object to do this we do strucutring becoz if we do not do this then it will be normally referece of the onject
-    //Filtering
-    const queryObj = { ...req.query };
-    const exclude = ["fields", "page", "sort", "limit"];
-    exclude.forEach((el) => delete queryObj[el]);
-    // console.log(req.query);
-    // const find1=await Tour.find(req.query);
-    // console.log(find1);
 
+    const features = new API(Tour.find(), req.query)
+      .sorting()
+      .fields()
+      .pagination();
+    // features.filter();
+    // features.sorting();
+    // features.fields();
+    // features.pagination();
 
-
-
-    //Advanced Filtering like adding GTE and LTE with $ sign
-    let queryStr = JSON.stringify(queryObj);
-    quertStr = queryStr.replace(/\bgte|gt|lte|lt\b/g, (match) => {
-      `$${match}`;
-    });
-    // console.log(JSON.parse(queryStr));
-
-
-
-   let query = Tour.find(JSON.parse(queryStr));
-    // console.log(find);
-
-
-
-    //SORTING
-    if (req.query.sort) {
-      const sortBy=req.query.sort.split(',').join(' ');
-      query=query.sort(sortBy);
-
-      //sort('price raitngAverage)
-    }else
-    {
-      query=query.sort('-createdAt');
-    }
-
-
-    // FIELD LIMITATION
-    if(req.query.fields)
-    {
-      console.log("hello");
-      const fields=req.query.fields.split(',').join(' ');
-      console.log(fields);
-      query=query.select(fields)
-
-    }
-    else{
-      query=query.select('-__v')
-    }
-    // console.log(query);
-
-
-    //PAGINATION
-
-
-    const page=req.query.page*1 || 1;const limit=req.query.limit*1 ||100;
-    const skip=(page-1)*limit;
-    query=query.skip(skip).limit(limit);
-
-
-    if(req.query.page){
-      const numTours=await Tour.countDocuments();
-      if(skip>numTours)throw new Error('This Page Not Exist');
-    }
-
-
-
-   
-
-
-
-
-
-
-    const find = await query;
+    const find = await features.query;
     res.status(200).json({
       status: "success",
       body: find,

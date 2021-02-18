@@ -12,6 +12,11 @@ app.use(express.static(`${__dirname}/starter/public`));
 app.route('/api/v1/tours/top-5-cheap').get(tour.topfivecheapesttour,tour.GetAllTour);
 
 
+//Aggregration
+app.route("/api/v1/tours/tours-stats").get(tour.getTourStats)
+
+app.route("/api/v1/tours/tours-yearly/:year").get(tour.getMonthlyPlan)
+
 app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
 
 

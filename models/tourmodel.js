@@ -1,54 +1,116 @@
-const mongoose = require('mongoose');
-const TourSchema = new mongoose.Schema({
+const mongoose = require("mongoose");
+const slugify = require("slugify");
+const validator = require("validator");
+const TourSchema = new mongoose.Schema(
+  {
     name: {
       type: String,
       required: [true, "A tour must have Name"],
-      unique: true, 
+      unique: true,
+      trim: true,
+      maxlength: [40, "A tour name Must have less or equal to 40 character"],
+      minlength: [4, "A tour name Must have atleast 4 character"],
+      validate: [validator.isAlpha, "Name Should be Alphabet Only"]
     },
-    duration:{  
-        type:Number,
-        required: [true, "A tour must have a duration"]
+    slug: String,
+    duration: {
+      type: Number,
+      required: [true, "A tour must have a duration"],
     },
-    maxGroupSize:{
-        type:String,
-        required: [true, "A tour must have a GroupSize"]
+    maxGroupSize: {
+      type: String,
+      required: [true, "A tour must have a GroupSize"],
+      enum: {
+        value: ["easy", "difficult", "medium"],
+        message: "Difficluty must be easy and medium and difficlut",
+      },
     },
-    difficulty:{
-        type:String,
-        required: [true, "A tour must have Difficulty"]
+    difficulty: {
+      type: String,
+      required: [true, "A tour must have Difficulty"],
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, "Rating Must Be above 0 "],
+      max: [5, "Rating Must be less than or equal to 5"],
     },
     ratingsQuantity: {
-        type: Number,
-        default:0,
+      type: Number,
+      default: 0,
     },
     price: {
       type: Number,
       required: [true, "A tour must have price"],
     },
-    priceDiscount:Number,
-    summery:{
-        type:String,
-        trim:true
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator: function (val) {
+          //this only poiunts to current doc non New document Creation
+          return val < this.price;
+        },
+        message: "Disocunt price ({VALUE}) should be below regular price",
+      },
     },
-    description:{
-        type:String,
-        trim:true
-    }, 
-    imageCover:{
-        type:String,
-        required: [true, "A tour must have a cover Image"]
+    summery: {
+      type: String,
+      trim: true,
     },
-    image:[String],
-    createdAt:{
-        type:Date,
-        default: Date.now()
+    description: {
+      type: String,
+      trim: true,
     },
-    startDates:[Date]
-  });
+    imageCover: {
+      type: String,
+      required: [true, "A tour must have a cover Image"],
+    },
+    image: [String],
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+TourSchema.virtual("durationWeeks").get(function () {
+  return this.duration / 7;
+});
+
+//DOCUMENT MIDDLEWARE works on .save and .create
+TourSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+//executed after all middleware executed
+// TourSchema.post("save", function (doc,next) {
+//     this.slug = slugify(this.name, { lower: true });
+//     next();
+//   });
+
+//Querey Middleware
+
+TourSchema.pre("/^find/", function (next) {
+  this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+//Aggregration Middleqware
+TourSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  next();
+});
 
 const Tour = mongoose.model("Tour", TourSchema);
-module.exports =Tour;
+module.exports = Tour;
+
+//4 types of middle ware in mongoose

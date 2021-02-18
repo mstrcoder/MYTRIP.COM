@@ -13,7 +13,9 @@
     "mongoose": "^5.11.16",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.7",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "slugify": "^1.4.6",
+    "validator": "^13.5.2"
   },
   "devDependencies": {
     "eslint": "^7.20.0",

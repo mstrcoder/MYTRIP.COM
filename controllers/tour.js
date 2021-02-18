@@ -112,6 +112,7 @@ const UpdateOneTour = async (req, res) => {
   try {
     const find = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      runValidators:true
     });
     // console.log(find);
     // if(find.length==0)console.log("Galat hai!")
@@ -244,49 +245,7 @@ exports.getMonthlyPlan=async (req,res) =>{
       status: "success",
       body: plan,
     });
-    // const stats = await Tour.aggregate([
-    //   {
-    //     $match: {
-    //       ratingsAverage: {
-    //         $gte: 4.5,
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $group: {
-    //       _id: '$difficulty',
-    //       numRatings: { $sum: "$ratingsQuantity" },
-    //       num: { $sum: 1 },
-    //       avgRating: {
-    //         $avg: "$ratingsAverage",
-    //       },
-    //       avgPrice: {
-    //         $avg: "$price",
-    //       },
-    //       minPrice: {
-    //         $min: "$price",
-    //       },
-    //       maxPrice: {
-    //         $avg: "$price",
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $sort:{
-    //       avgPrice:1
-    //     }
-    //   }
-    //   // ,
-    //   // {
-    //   //   $match: {
-    //   //     _id:{$ne:'easy'}
-    //   //   }
-    //   // }
-    // ]);
-    // res.status(200).json({
-    //   status: "success",
-    //   body: stats,
-    // });
+    
   } catch (err) {
     res.status(400).json({
       status: "fail",

@@ -21,6 +21,13 @@ app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
 
 
 app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour).delete(tour.DeleteOneTour);
+
+app.all('*',(req,res)=>{
+    res.status(404).json({
+        status:"Failed!", 
+        message:"Cannot get the Request route"
+    })
+})
 // // app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour);
 // app
 //   .route("/api/v1/tours/:id")

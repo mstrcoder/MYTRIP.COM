@@ -5,6 +5,7 @@ const app = express();
 const morgan = require("morgan");
 const API = require("./../utilities/apifeatures");
 const catchAsync=require('./../utilities/asyncerror');
+const AppError=require('./../utilities/apperror');
 //used to add iddleware
 app.use(express.json());
 
@@ -29,7 +30,7 @@ exports.topfivecheapesttour = (req, res, next) => {
 //   fs.readFileSync("./starter/dev-data/data/tours-simple.json", "utf-8")
 // );
 
-const GetAllTour = catchAsync(async (req, res) => {
+const GetAllTour = catchAsync(async (req, res,next) => {
   // try {
     const features = new API(Tour.find(), req.query)
       .sorting()
@@ -53,8 +54,8 @@ const GetAllTour = catchAsync(async (req, res) => {
   //   });
   // }
 });
-const CreateNewTour = catchAsync(async (req, res,next) => {
-
+const CreateNewTour = catchAsync( async (req, res,next) => {
+ 
     const newTour = await Tour.create(req.body);
     res.status(201).json({
       status: "success",
@@ -63,7 +64,7 @@ const CreateNewTour = catchAsync(async (req, res,next) => {
 
     // catch (err) {
     //   res.status(400).json({
-    //     status: "fail",
+    //     status: "fail", 
     //     message: err,
     //   });
  
@@ -90,9 +91,16 @@ const CreateNewTour = catchAsync(async (req, res,next) => {
 
   // res.status(200).send("Posted the data")
  );
-const GetOneTour =  catchAsync(async (req, res) => {
+const GetOneTour =  catchAsync(async (req, res,next) => {
   
     const find = await Tour.findById(req.params.id);
+    // console.log("bhayya");
+    // console.log(find);
+    if(!find)
+    {
+      // console.log("Error is here ");
+      return next(new AppError('No Tour Find',404))
+    }
     // console.log(find);
     // if(find.length==0)console.log("Galat hai!")
     res.status(200).json({
@@ -106,7 +114,7 @@ const GetOneTour =  catchAsync(async (req, res) => {
   // });
 });
 
-const UpdateOneTour =  catchAsync(async (req, res) => {
+const UpdateOneTour =  catchAsync(async (req, res,next) => {
     const find = await Tour.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators:true
@@ -120,7 +128,7 @@ const UpdateOneTour =  catchAsync(async (req, res) => {
   
 });
 
-const DeleteOneTour =  catchAsync(async (req, res) => {
+const DeleteOneTour =  catchAsync(async (req, res,next) => {
 
     const find = await Tour.findByIdAndDelete(req.params.id);
     // console.log(find);

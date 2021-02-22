@@ -5,7 +5,9 @@ const morgan = require("morgan");
 const tour = require("./controllers/tour");
 const user = require("./controllers/user");
 const querystring = require("querystring");
-const AppError=require('./utilities/apperror')
+const AppError = require("./utilities/apperror");
+const catchAsync = require("./utilities/asyncerror");
+const dotenv= require('dotenv')
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
 app.use(express.json());
@@ -27,30 +29,62 @@ app
   .patch(tour.UpdateOneTour)
   .delete(tour.DeleteOneTour);
 
-app.all("*", (req, res,next) => {
+app.all("*", (req, res, next) => {
   // res.status(404).json({
   //     status:"Failed!",
   //     message:"Cannot get the Request route"
-  // })  
-  next(new AppError('Cannot Find The Route',400));
-//   const err = new Error('Cannot get the Request route');
-//   err.statusCode = 404;
-//   err.status = 'fail';
-//   next(err);
+  // })
+  next(new AppError("Cannot Find The Route", 400));
+  // const err = new Error('Cannot get the Request route');
+  // err.statusCode = 404;
+  // err.status = 'fail';
+  // next(err);
 });
 
 //GLOBAL Middle ware habdler
 app.use((err, req, res, next) => {
-   
-    // console.log("hello3");
-    // console.log(err.status,err.message);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
-//   console.log(err.status,err.message);
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
+
+  // res.status(err.statusCode).json({
+  //   status: err.status,
+  //   message: err.message
+  // });
+  // console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === "development") {
+    res.status(err.statusCode).json({
+      status: err.status,
+      error:err,
+      message: err.message,
+      stack: err.stack
+    });
+  }
+  else if(process.env.NODE_ENV === "production")
+  {
+    if(err.isOperational)
+    {
+      res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+    });
+
+    }
+    else
+    {
+      // console.error('Error!',err);
+      // console.log("ERROR!!!!");
+      res.send(500).json({
+        status:'error',
+        message:'Something Went Wrong'
+      })
+    }
+
+  }
+  // console.log("hello3");
+  // console.log(err);
+  // console.log(err.status,err.message);
+
+  // console.log(err.status,err.message);
 });
 // // app.route("/api/v1/tours/:id").get(tour.GetOneTour).patch(tour.UpdateOneTour);
 // app

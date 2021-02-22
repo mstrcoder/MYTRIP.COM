@@ -41,6 +41,7 @@ app.all("*", (req, res,next) => {
 
 //GLOBAL Middle ware habdler
 app.use((err, req, res, next) => {
+   
     // console.log("hello3");
     // console.log(err.status,err.message);
   err.statusCode = err.statusCode || 500;

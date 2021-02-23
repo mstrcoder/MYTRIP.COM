@@ -2,11 +2,19 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const morgan = require("morgan");
-
+const AppError = require("./../utilities/apperror");
+const catchAsync = require("./../utilities/asyncerror");
+const User = require("./../models/usermodel");
 
 //used to add iddleware
 app.use(express.json());
-
+const filterObj=(obj, ...allowedFields)=>{
+  const newObj={}
+    Object.keys(obj).forEach(el =>{
+      if(allowedFields.includes(el))newObj[el]=obj[el]
+    })
+    return newObj;
+}
 ///creating own middle ware
 // app.use((req,res,next)=>{
 // console.log("hello form the  iddle ware");
@@ -19,8 +27,16 @@ const users = JSON.parse(
   fs.readFileSync("./starter/dev-data/data/users.json", "utf-8")
 );
 
+exports.updateMe = catchAsync(async(req, res, next) => {
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(new AppError("This route is for not for password Update", 400));
+  }
+  // const user=User.
+  const filteredBody=filterObj(req.body,'name','email')
+  const updatedUser=await User.findByIdAndUpdate(req.body.id,x,{new:true,runValidators:true});
 
 
+})
 const GetAllUser = (req, res) => {
   res.status(200).json({
     status: "success",
@@ -61,9 +77,9 @@ const CreateNewUser = (req, res) => {
 const GetOneUser = (req, res) => {
   console.log(req.params);
   const val = users.find((ele) => {
-      if(ele.id === req.params.id)return ele;
+    if (ele.id === req.params.id) return ele;
   });
-//   console.log(val);
+  //   console.log(val);
   if (!val) {
     res.status(400).json({
       status: "failed",

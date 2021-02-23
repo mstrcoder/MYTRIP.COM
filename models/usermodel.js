@@ -57,12 +57,9 @@ UserSchema.pre("save", async function (next) {
 //it is run when new Document is saved
 UserSchema.pre("save", async function (next) {
     //is modified is function
-    if (!this.isModified("password")) return next();
-  
-    //   console.log("password is modified");
-    this.password = await bcrypt.hash(this.password, 12);
-    this.passwordConfirm = undefined;
-    //   console.log(this.name,this.passwordChangedAt);
+    if (!this.isModified("password")||this.isNew) return next();
+
+    this.passwordChangedAt=Date.now()-1000;
     next();
   });
 

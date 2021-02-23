@@ -54,6 +54,17 @@ UserSchema.pre("save", async function (next) {
   //   console.log(this.name,this.passwordChangedAt);
   next();
 });
+//it is run when new Document is saved
+UserSchema.pre("save", async function (next) {
+    //is modified is function
+    if (!this.isModified("password")) return next();
+  
+    //   console.log("password is modified");
+    this.password = await bcrypt.hash(this.password, 12);
+    this.passwordConfirm = undefined;
+    //   console.log(this.name,this.passwordChangedAt);
+    next();
+  });
 
 //this is and instance so it is availbale on all the doucuments
 UserSchema.methods.correctPassword = async function (

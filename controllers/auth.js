@@ -4,7 +4,8 @@ const jwt = require("jsonwebtoken");
 const AppError = require("./../utilities/apperror");
 const { promisify } = require("util");
 const { decode } = require("querystring");
-const sendEmail = require('./../utilities/email');
+const sendEmail = require("./../utilities/email");
+const crypto = require("crypto");
 
 //Generating JWT Token!
 const signToken = (id) => {
@@ -139,7 +140,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
   //generate Random Reset Token and
   const token = user.createPasswordResetToken();
-//   console.log(token);
+  //   console.log(token);
   //why validte beforesave becase then it ewill require password and all stufff
   await user.save({ validateBeforeSave: false });
 
@@ -149,28 +150,67 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     "host"
   )}/api/vi/users/resetPassword/${token}}`;
 
-  const message=`Forgot Your password ?Submit a PATCH request with your new Passowrd amd password Confirm to ${resetURL}.\n `;
+  const message = `Forgot Your password ?Submit a PATCH request with your new Passowrd amd password Confirm to ${resetURL}.\n `;
 
-  try{
-
+  try {
     // console.log(resetURL,message);
     await sendEmail({
-        email:user.email,
-        subject:'Your password Reset Token Valid for 10 min',
-        message:message
-    })
-  
-    res.status(200).json({
-        status:'success', 
-        message:'Token sent on email!'
-    })
-  }catch (err) {
-      user.passwordResetToken=undefined;
-      user.passwordResetExpires=undefined;
-      await user.save({ validateBeforeSave: false });
-      return next(new AppError("There is was an  Error With This Email Address", 500));
-  }
+      email: user.email,
+      subject: "Your password Reset Token Valid for 10 min",
+      message: message,
+    });
 
+    res.status(200).json({
+      status: "success",
+      message: "Token sent on email!",
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    return next(
+      new AppError("There is was an  Error With This Email Address", 500)
+    );
+  }
 });
 
-exports.resetPassword = (req, res, next) => {};
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  //get USer BAsed On the Token
+
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+    // if token not expires and ther eis a User
+
+  if(!user){
+    return next(
+        new AppError("Token is Invalid or expired", 500)
+      );
+  }
+
+  // update Changed PAssword propety fopr the users
+  user.password=req.body.password;
+  user.passwordConfirm=req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save();
+
+
+  
+  //log the user in ,send JWt
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: "Success!",
+    token,
+  });
+
+
+
+
+});

@@ -46,6 +46,8 @@ app.route('/users/login').post(Auth.login)
 app.route('/users/forgotPassword').post(Auth.forgotPassword)
 app.route('/users/resetPassword/:token').patch(Auth.resetPassword)
 app.route('/users/updateMyPassword').patch(Auth.protect,Auth.updatePassword);
+app.route('/users/updateMe').patch(Auth.protect,user.updateMe);
+app.route('/users/deleteMe').patch(Auth.protect,user.deleteMe);
 
 
 app.all("*", (req, res, next) => {

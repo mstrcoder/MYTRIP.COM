@@ -42,6 +42,11 @@ const UserSchema = new mongoose.Schema({
   },
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 UserSchema.pre("save", async function (next) {
@@ -56,13 +61,16 @@ UserSchema.pre("save", async function (next) {
 });
 //it is run when new Document is saved
 UserSchema.pre("save", async function (next) {
-    //is modified is function
-    if (!this.isModified("password")||this.isNew) return next();
+  //is modified is function
+  if (!this.isModified("password") || this.isNew) return next();
 
-    this.passwordChangedAt=Date.now()-1000;
-    next();
-  });
-
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+UserSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 //this is and instance so it is availbale on all the doucuments
 UserSchema.methods.correctPassword = async function (
   candidatePassword,
@@ -93,7 +101,6 @@ UserSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest("hex");
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
 
   return resetToken;
   // return await bcrypt.compare(candidatePassword,userPassword);

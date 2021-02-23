@@ -9,10 +9,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.16",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.4.18",
     "nodemon": "^2.0.7",
     "querystring": "^0.2.1",
     "slugify": "^1.4.6",

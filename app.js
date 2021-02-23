@@ -7,27 +7,45 @@ const user = require("./controllers/user");
 const querystring = require("querystring");
 const AppError = require("./utilities/apperror");
 const catchAsync = require("./utilities/asyncerror");
-const dotenv= require('dotenv')
+const dotenv= require('dotenv');
+const Auth=require('./controllers/auth')
+
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
 app.use(express.json());
 app.use(express.static(`${__dirname}/starter/public`));
+
+app.use((req,res,next)=>{
+  // console.log(req.headers);
+  next();
+})
+
+
+
+
 app
   .route("/api/v1/tours/top-5-cheap")
   .get(tour.topfivecheapesttour, tour.GetAllTour);
 
 //Aggregration
+
 app.route("/api/v1/tours/tours-stats").get(tour.getTourStats);
 
 app.route("/api/v1/tours/tours-yearly/:year").get(tour.getMonthlyPlan);
 
-app.route("/api/v1/tours").get(tour.GetAllTour).post(tour.CreateNewTour);
+app.route("/api/v1/tours").get(Auth.protect,tour.GetAllTour).post(tour.CreateNewTour);
 
 app
   .route("/api/v1/tours/:id")
   .get(tour.GetOneTour)
   .patch(tour.UpdateOneTour)
-  .delete(tour.DeleteOneTour);
+  .delete(Auth.protect,Auth.restrictTo('admin','lead-guide'),tour.DeleteOneTour);
+
+app.route('/users/signup').post(Auth.signup)
+app.route('/users/login').post(Auth.login)
+app.route('/users/forgotPassword').post(Auth.forgotPassword)
+app.route('/users/resetPassword/:token').patch(Auth.resetPassword)
+
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({

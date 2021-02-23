@@ -24,7 +24,7 @@ mongoose
 //   price: 100000,
 // });
 //its also give the log of data
-// MyfirstTour.save()
+// MyfirstTour.save()s
 //   .then((doc) => {
 //     console.log(doc);
 //   })

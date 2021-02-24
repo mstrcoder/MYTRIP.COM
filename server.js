@@ -1,4 +1,4 @@
-const app = require("./app");
+const app = require('./app');
 const mongoose = require("mongoose");
 const tour = require("./models/tourmodel");
 const dotenv= require('dotenv')
@@ -23,6 +23,7 @@ mongoose
 // const MyfirstTour = new Tour({
 //   price: 100000,
 // });
+
 //its also give the log of data
 // MyfirstTour.save()s
 //   .then((doc) => {
@@ -31,7 +32,7 @@ mongoose
 //   .catch((err) => {
 //     console.log("error aagya!  ", err);
 //   });
-const port=process.env.PORT||3000
+const port=5000
 const server=app.listen(port, () => {
   console.log("server listening on Port 5000");
 });

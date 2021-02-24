@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const validator = require("validator");
+const User=require('./usermodel')
 const TourSchema = new mongoose.Schema(
   {
     name: {
@@ -95,6 +96,13 @@ const TourSchema = new mongoose.Schema(
         day:String
       },
     ],
+    guides:[{
+      //this is referencing in Mongoose
+      // type:Array,
+      type:mongoose.Schema.ObjectId,
+      //form where we need to refrence
+      ref:'User'
+    }],
   },
   {
     toJSON: { virtuals: true },
@@ -119,7 +127,7 @@ TourSchema.pre("save", function (next) {
 
 //Querey Middleware
 
-TourSchema.pre("/^find/", function (next) {
+TourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   next();
 });
@@ -129,6 +137,27 @@ TourSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
+
+//Populates Middleware
+TourSchema.pre(/^find/, function (next) {
+  console.log("get Guides!!!");
+  this.populate({
+    path:'guides',
+    select:'-__v -passwordChangedAt'
+  });
+  next();
+});
+
+
+//it is responsible for performing Embeding
+// TourSchema.pre("save", async function (next) {
+//   console.log("Hello Brother");
+//   //will return array of promises 
+//     const guidesPromises=this.guides.map(async id =>await User.findById(id));
+//     //this is the way we resolve all the promises
+//     this.guides=await Promise.all(guidesPromises)
+//   next();
+// });
 
 const Tour = mongoose.model("Tour", TourSchema);
 module.exports = Tour;

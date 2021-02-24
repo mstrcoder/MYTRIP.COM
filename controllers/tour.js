@@ -93,10 +93,11 @@ const CreateNewTour = catchAsync( async (req, res,next) => {
  );
 const GetOneTour =  catchAsync(async (req, res,next) => {
   
-    const find = await Tour.findById(req.params.id);
+    const find = await Tour.findById(req.params.id)
+    //used Populates for refrencing the data form guides which has the ID of User 
     // console.log("bhayya");
     // console.log(find);
-    if(!find)
+    if(!find) 
     {
       // console.log("Error is here ");
       return next(new AppError('No Tour Find',404))

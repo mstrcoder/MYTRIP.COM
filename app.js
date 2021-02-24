@@ -4,6 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const tour = require("./controllers/tour");
 const user = require("./controllers/user");
+const review = require("./controllers/review");
 const querystring = require("querystring");
 const AppError = require("./utilities/apperror");
 const catchAsync = require("./utilities/asyncerror");
@@ -11,8 +12,8 @@ const dotenv = require("dotenv");
 const Auth = require("./controllers/auth");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
-const mongoSanitize = require("express-mongo-sanitize ");
-const xss = require("xss-clean ");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 const hpp = require("hpp");
 
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
@@ -80,6 +81,12 @@ app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
 app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
 app.route("/users/updateMe").patch(Auth.protect, user.updateMe);
 app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
+
+
+
+//now for review
+app.route('/review').get(review.getAllReview).post(Auth.protect,Auth.restrictTo('user'),review.createReview)
+// .get(review.getAllreview)
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({

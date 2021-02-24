@@ -19,7 +19,7 @@ const TourSchema = new mongoose.Schema(
     },
     maxGroupSize: {
       type: String,
-      required: [true, "A tour must have a GroupSize"]
+      required: [true, "A tour must have a GroupSize"],
     },
     difficulty: {
       type: String,
@@ -71,6 +71,30 @@ const TourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      //GeoJSON
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },//this will create an embedded data//dereferencing
+    locations: [
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day:String
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

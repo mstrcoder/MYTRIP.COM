@@ -7,6 +7,18 @@ const Tour = require('./../../../models/tourmodel');
 //nodejs environment variable
 // console.log(process.env);
 
+// mongoose
+//   .connect(
+//     'mongodb+srv://ifham:1234@cluster0.d8o0d.mongodb.net/MYTRIP?retryWrites=true&w=majority',
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     }
+//   )
+//   .then(() => {
+//     // console.log(con.connection);
+//     console.log('We are Connected to the Database');
+//   });
 mongoose
   .connect(
     'mongodb+srv://ifham:1234@cluster0.d8o0d.mongodb.net/MYTRIP?retryWrites=true&w=majority',
@@ -21,7 +33,8 @@ mongoose
   });
 
 //Read JSON file
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'))
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
+console.log(tours);
 
 const importData = async () => {
   try {

@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const API = require("./../utilities/apifeatures");
 const catchAsync=require('./../utilities/asyncerror');
 const AppError=require('./../utilities/apperror');
+const handler=require('./handler')
 //used to add iddleware
 app.use(express.json());
 
@@ -93,7 +94,7 @@ const CreateNewTour = catchAsync( async (req, res,next) => {
  );
 const GetOneTour =  catchAsync(async (req, res,next) => {
   
-    const find = await Tour.findById(req.params.id)
+    const find = await Tour.findById(req.params.id).populate('reviews')
     //used Populates for refrencing the data form guides which has the ID of User 
     // console.log("bhayya");
     // console.log(find);
@@ -129,17 +130,18 @@ const UpdateOneTour =  catchAsync(async (req, res,next) => {
   
 });
 
-const DeleteOneTour =  catchAsync(async (req, res,next) => {
+const DeleteOneTour =handler.deleteOneTour(Tour)
+// const DeleteOneTour = catchAsync(async (req, res,next) => {
 
-    const find = await Tour.findByIdAndDelete(req.params.id);
-    // console.log(find);
-    // if(find.length==0)console.log("Galat hai!")
-    res.status(200).json({
-      status: "success",
-      body: find,
-    });
-  
-});
+//   const find = await Tour.findByIdAndDelete(req.params.id);
+//   // console.log(find);
+//   // if(find.length==0)console.log("Galat hai!")
+//   res.status(204).json({
+//     status: "success",
+//     data:null
+//   });
+
+// });
 
 exports.GetAllTour = GetAllTour;
 

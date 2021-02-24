@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const AppError = require("./../utilities/apperror");
 const catchAsync = require("./../utilities/asyncerror");
 const User = require("./../models/usermodel");
-
+const handler=require('./handler')
 //used to add iddleware
 app.use(express.json());
 const filterObj=(obj, ...allowedFields)=>{
@@ -117,13 +117,15 @@ const UpdateOneUser = (req, res) => {
   });
 };
 
-const DeleteOneUser = (req, res) => {
-  // console.log(req.params);
-  res.status(200).json({
-    status: "success",
-    body: users[req.params.id],
-  });
-};
+
+const DeleteOneUser=handler.deleteOneTour(User)
+// const DeleteOneUser = (req, res) => {
+//   // console.log(req.params);
+//   res.status(200).json({
+//     status: "success",
+//     body: users[req.params.id],
+//   });
+// };
 
 exports.GetAllUser = GetAllUser;
 

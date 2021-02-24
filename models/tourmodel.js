@@ -102,7 +102,8 @@ const TourSchema = new mongoose.Schema(
       type:mongoose.Schema.ObjectId,
       //form where we need to refrence
       ref:'User'
-    }],
+    }]
+
   },
   {
     toJSON: { virtuals: true },
@@ -113,6 +114,17 @@ const TourSchema = new mongoose.Schema(
 TourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7;
 });
+
+
+//virtual populate
+TourSchema.virtual('reviews',{
+    ref:'Review', 
+    //it represent where the Tourmodel is saved in child data in this ex it saved as tour
+    foreignField: 'tour',
+    localField: '_id'
+
+
+})
 
 //DOCUMENT MIDDLEWARE works on .save and .create
 TourSchema.pre("save", function (next) {

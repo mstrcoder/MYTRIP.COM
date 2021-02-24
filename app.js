@@ -88,6 +88,10 @@ app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
 app.route('/review').get(review.getAllReview).post(Auth.protect,Auth.restrictTo('user'),review.createReview)
 // .get(review.getAllreview)
 
+//LETS TALK ABOUT NESTED ROUTES
+app.route('/api/v1/tours/:tourId/reviews').post(Auth.protect,Auth.restrictTo('user'),review.createReview).delete(review.deleteReview)
+
+
 app.all("*", (req, res, next) => {
   // res.status(404).json({
   //     status:"Failed!",

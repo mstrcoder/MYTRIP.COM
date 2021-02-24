@@ -7,21 +7,46 @@ const user = require("./controllers/user");
 const querystring = require("querystring");
 const AppError = require("./utilities/apperror");
 const catchAsync = require("./utilities/asyncerror");
-const dotenv= require('dotenv');
-const Auth=require('./controllers/auth')
+const dotenv = require("dotenv");
+const Auth = require("./controllers/auth");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize ");
+const xss = require("xss-clean ");
+const hpp = require("hpp");
 
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
 //used to add iddleware
-app.use(express.json());
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: "Too MAny Request from This IP",
+});
+app.use("/api", limiter);
+//secure the HTTP resquest Header
+app.use(helmet());
+
+app.use(express.json({ limit: "10kb" }));
+
+//DATA Sanitisation Againstb NoSQL query injections
+app.use(mongoSanitize());
+
+//DATA sanitization against xss
+app.use(xss());
+
+//hppapp.use(express.)
+app.use(
+  hpp({
+    whitelist: ["duration",'ratingQuantity','ratingDifficulty'],
+  })
+);
+//Data Sanitisation
 app.use(express.static(`${__dirname}/starter/public`));
 
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
   // console.log(req.headers);
   next();
-})
-
-
-
+});
 
 app
   .route("/api/v1/tours/top-5-cheap")
@@ -33,22 +58,28 @@ app.route("/api/v1/tours/tours-stats").get(tour.getTourStats);
 
 app.route("/api/v1/tours/tours-yearly/:year").get(tour.getMonthlyPlan);
 
-app.route("/api/v1/tours").get(Auth.protect,tour.GetAllTour).post(tour.CreateNewTour);
+app
+  .route("/api/v1/tours")
+  .get(Auth.protect, tour.GetAllTour)
+  .post(tour.CreateNewTour);
 
 app
   .route("/api/v1/tours/:id")
   .get(tour.GetOneTour)
   .patch(tour.UpdateOneTour)
-  .delete(Auth.protect,Auth.restrictTo('admin','lead-guide'),tour.DeleteOneTour);
+  .delete(
+    Auth.protect,
+    Auth.restrictTo("admin", "lead-guide"),
+    tour.DeleteOneTour
+  );
 
-app.route('/users/signup').post(Auth.signup)
-app.route('/users/login').post(Auth.login)
-app.route('/users/forgotPassword').post(Auth.forgotPassword)
-app.route('/users/resetPassword/:token').patch(Auth.resetPassword)
-app.route('/users/updateMyPassword').patch(Auth.protect,Auth.updatePassword);
-app.route('/users/updateMe').patch(Auth.protect,user.updateMe);
-app.route('/users/deleteMe').patch(Auth.protect,user.deleteMe);
-
+app.route("/users/signup").post(Auth.signup);
+app.route("/users/login").post(Auth.login);
+app.route("/users/forgotPassword").post(Auth.forgotPassword);
+app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
+app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
+app.route("/users/updateMe").patch(Auth.protect, user.updateMe);
+app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({
@@ -75,31 +106,24 @@ app.use((err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     res.status(err.statusCode).json({
       status: err.status,
-      error:err,
+      error: err,
       message: err.message,
-      stack: err.stack
+      stack: err.stack,
     });
-  }
-  else if(process.env.NODE_ENV === "production")
-  {
-    if(err.isOperational)
-    {
+  } else if (process.env.NODE_ENV === "production") {
+    if (err.isOperational) {
       res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-
-    }
-    else
-    {
+        status: err.status,
+        message: err.message,
+      });
+    } else {
       // console.error('Error!',err);
       // console.log("ERROR!!!!");
       res.send(500).json({
-        status:'error',
-        message:'Something Went Wrong'
-      })
+        status: "error",
+        message: "Something Went Wrong",
+      });
     }
-
   }
   // console.log("hello3");
   // console.log(err);

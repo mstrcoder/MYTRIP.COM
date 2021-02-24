@@ -9,6 +9,12 @@ const crypto = require("crypto");
 
 //Generating JWT Token!
 const signToken = (id) => {
+   // create Cokkies After
+//   res.cookies("jwt", token, {
+//     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+//     secure: true,
+//     httpOnly: true,
+//   });
   return jwt.sign(
     {
       id: id,
@@ -186,60 +192,50 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
-    // if token not expires and ther eis a User
+  // if token not expires and ther eis a User
 
-  if(!user){
-    return next(
-        new AppError("Token is Invalid or expired", 500)
-      );
+  if (!user) {
+    return next(new AppError("Token is Invalid or expired", 500));
   }
 
   // update Changed PAssword propety fopr the users
-  user.password=req.body.password;
-  user.passwordConfirm=req.body.passwordConfirm;
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
 
-
-  
   //log the user in ,send JWt
   const token = signToken(user._id);
   res.status(200).json({
     status: "Success!",
     token,
   });
-
-
-
-
 });
 
-exports.updatePassword=catchAsync(async(req,res,next)=>{
-        //Get USer From Collection
-        const user=await User.findById(req.user.id).select('+password');
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //Get USer From Collection
+  const user = await User.findById(req.user.id).select("+password");
 
-        const correct = await user.correctPassword(req.body.passwordCurrent, user.password);
+  const correct = await user.correctPassword(
+    req.body.passwordCurrent,
+    user.password
+  );
 
+  //check id Posted Current Pasword is correctPassword
+  if (!correct) {
+    return next(new AppError("Your pAssword is not Correct", 401));
+  }
 
+  //update the Password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
 
-        //check id Posted Current Pasword is correctPassword
-        if ( !correct) {
-            return next(new AppError("Your pAssword is not Correct", 401));
-        }
-
-        //update the Password
-            user.password=req.body.password
-            user.passwordConfirm=req.body.passwordConfirm;
-            await user.save();
-
-        //log user in send JWT
-        const token = signToken(user._id);
-        res.status(200).json({
-          status: "Success!",
-          token,
-        });
-})
-
-
-
+  //log user in send JWT
+  const token = signToken(user._id);
+  res.status(200).json({
+    status: "Success!",
+    token,
+  });
+});

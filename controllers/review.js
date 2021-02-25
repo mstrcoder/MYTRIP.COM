@@ -23,4 +23,6 @@ exports.getAllReview=catchAsync(async (req, res, next) => {
       });
 })
 
+exports.getReview=handler.getOne(Review);
+
 exports.deleteReview=handler.deleteOneTour(Review)

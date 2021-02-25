@@ -38,7 +38,7 @@ app.use(xss());
 //hppapp.use(express.)
 app.use(
   hpp({
-    whitelist: ["duration",'ratingQuantity','ratingDifficulty'],
+    whitelist: ["duration", "ratingQuantity", "ratingDifficulty"],
   })
 );
 //Data Sanitisation
@@ -61,13 +61,21 @@ app.route("/api/v1/tours/tours-yearly/:year").get(tour.getMonthlyPlan);
 
 app
   .route("/api/v1/tours")
-  .get(Auth.protect, tour.GetAllTour)
-  .post(tour.CreateNewTour);
+  .get(tour.GetAllTour)
+  .post(
+    Auth.protect,
+    Auth.restrictTo("admin", "lead-guide"),
+    tour.CreateNewTour
+  );
 
 app
   .route("/api/v1/tours/:id")
   .get(tour.GetOneTour)
-  .patch(tour.UpdateOneTour)
+  .patch(
+    Auth.protect,
+    Auth.restrictTo("admin", "lead-guide"),
+    tour.UpdateOneTour
+  )
   .delete(
     Auth.protect,
     Auth.restrictTo("admin", "lead-guide"),
@@ -81,16 +89,22 @@ app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
 app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
 app.route("/users/updateMe").patch(Auth.protect, user.updateMe);
 app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
-
-
+app.route("/users/me").get(Auth.protect, user.getMe, user.GetOneUser);
 
 //now for review
-app.route('/review').get(review.getAllReview).post(Auth.protect,Auth.restrictTo('user'),review.createReview)
+app
+  .route("/review")
+  .get(review.getAllReview)
+  .post(Auth.protect, Auth.restrictTo("user"), review.createReview);
+app.route("/review/:TourId").get(review.getReview);
+
 // .get(review.getAllreview)
 
 //LETS TALK ABOUT NESTED ROUTES
-app.route('/api/v1/tours/:tourId/reviews').post(Auth.protect,Auth.restrictTo('user'),review.createReview).delete(review.deleteReview)
-
+app
+  .route("/api/v1/tours/:tourId/reviews")
+  .post(Auth.protect, Auth.restrictTo("user"), review.createReview)
+  .delete(review.deleteReview);
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({

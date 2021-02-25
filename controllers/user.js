@@ -27,6 +27,12 @@ const users = JSON.parse(
   fs.readFileSync("./starter/dev-data/data/users.json", "utf-8")
 );
 
+exports.getMe=(req,res,next) => {
+  req.params.id=req.user.id;
+  next();
+}
+
+
 exports.updateMe = catchAsync(async(req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError("This route is for not for password Update", 400));
@@ -91,23 +97,25 @@ const CreateNewUser = (req, res) => {
   // res.status(200).send("Posted the data")
 };
 
-const GetOneUser = (req, res) => {
-  console.log(req.params);
-  const val = users.find((ele) => {
-    if (ele.id === req.params.id) return ele;
-  });
-  //   console.log(val);
-  if (!val) {
-    res.status(400).json({
-      status: "failed",
-      body: "Could not Locate the ID!",
-    });
-  }
-  res.status(200).json({
-    status: "success",
-    body: val,
-  });
-};
+
+const GetOneUser=handler.getOne(User)
+// const GetOneUser = (req, res) => {
+//   console.log(req.params);
+//   const val = users.find((ele) => {
+//     if (ele.id === req.params.id) return ele;
+//   });
+//   //   console.log(val);
+//   if (!val) {
+//     res.status(400).json({
+//       status: "failed",
+//       body: "Could not Locate the ID!",
+//     });
+//   }
+//   res.status(200).json({
+//     status: "success",
+//     body: val,
+//   });
+// };
 
 const UpdateOneUser = (req, res) => {
   // console.log(req.params);

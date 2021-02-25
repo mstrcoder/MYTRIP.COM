@@ -31,30 +31,32 @@ exports.topfivecheapesttour = (req, res, next) => {
 //   fs.readFileSync("./starter/dev-data/data/tours-simple.json", "utf-8")
 // );
 
-const GetAllTour = catchAsync(async (req, res,next) => {
-  // try {
-    const features = new API(Tour.find(), req.query)
-      .sorting()
-      .fields()
-      .pagination();
-    // features.filter();
-    // features.sorting();
-    // features.fields();
-    // features.pagination();
 
-    const find = await features.query;
-    res.status(200).json({
-      status: "success",
-      body: find,
-    });
-  // } 
-  // catch (err) {
-  //   res.status(400).json({
-  //     status: "fail",
-  //     message: "Cannot get data",
-  //   });
-  // }
-});
+const GetAllTour =handler.getAll(Tour)
+// const GetAllTour = catchAsync(async (req, res,next) => {
+//   // try {
+//     const features = new API(Tour.find(), req.query)
+//       .sorting()
+//       .fields()
+//       .pagination();
+//     // features.filter();
+//     // features.sorting();
+//     // features.fields();
+//     // features.pagination();
+
+//     const find = await features.query;
+//     res.status(200).json({
+//       status: "success",
+//       body: find,
+//     });
+//   // } 
+//   // catch (err) {
+//   //   res.status(400).json({
+//   //     status: "fail",
+//   //     message: "Cannot get data",
+//   //   });
+//   // }
+// });
 const CreateNewTour = catchAsync( async (req, res,next) => {
  
     const newTour = await Tour.create(req.body);
@@ -92,29 +94,34 @@ const CreateNewTour = catchAsync( async (req, res,next) => {
 
   // res.status(200).send("Posted the data")
  );
-const GetOneTour =  catchAsync(async (req, res,next) => {
+
+
+ const GetOneTour=handler.getOne(Tour,{path:'reviews'})
+
+
+// const GetOneTour =  catchAsync(async (req, res,next) => {
   
-    const find = await Tour.findById(req.params.id).populate('reviews')
-    //used Populates for refrencing the data form guides which has the ID of User 
-    // console.log("bhayya");
-    // console.log(find);
-    if(!find) 
-    {
-      // console.log("Error is here ");
-      return next(new AppError('No Tour Find',404))
-    }
-    // console.log(find);
-    // if(find.length==0)console.log("Galat hai!")
-    res.status(200).json({
-      status: "success",
-      body: find,
-    });
-  // console.log(req.params);
-  // res.status(200).json({
-  //     status: "success",
-  //     body: tours[req.params.id],
-  // });
-});
+//     const find = await Tour.findById(req.params.id).populate('reviews')
+//     //used Populates for refrencing the data form guides which has the ID of User 
+//     // console.log("bhayya");
+//     // console.log(find);
+//     if(!find) 
+//     {
+//       // console.log("Error is here ");
+//       return next(new AppError('No Tour Find',404))
+//     }
+//     // console.log(find);
+//     // if(find.length==0)console.log("Galat hai!")
+//     res.status(200).json({
+//       status: "success",
+//       body: find,
+//     });
+//   // console.log(req.params);
+//   // res.status(200).json({
+//   //     status: "success",
+//   //     body: tours[req.params.id],
+//   // });
+// });
 
 const UpdateOneTour =  catchAsync(async (req, res,next) => {
     const find = await Tour.findByIdAndUpdate(req.params.id, req.body, {

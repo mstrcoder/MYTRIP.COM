@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const morgan = require("morgan");
+const path = require('path');
 const tour = require("./controllers/tour");
 const user = require("./controllers/user");
 const review = require("./controllers/review");
@@ -16,8 +17,11 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 
+
+app.set('view engine','pug')
+app.set('views',path.join(__dirname,'views'))
 // const {GetAllTour,CreateNewTour,GetOneTour,UpdateOneTour,DeleteOneTour} = require('./tour');
-//used to add iddleware
+//used to add iddleware 
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
@@ -109,6 +113,15 @@ app
 
 //GEOLOCATION
 app.route('/tours/tours-within/:distance/centre/:latlng/unit/:unit').get(tour.getTourWithin)
+
+
+//PUGHapp.get('/')
+app.get('/',(req,res)=>{
+  res.status(200).render('base',{
+    tour:'The Forest Hiker', 
+    user:'Ifham'
+  })  
+})
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({

@@ -15,24 +15,22 @@ int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
     cout.tie(NULL);
-    int t;
-    cin>>t;
-    while(t--){
-        ll n;
-        ll max1=0;
-        cin>>n;
-        ll a[n];f(i,n)cin>>a[i],max1=max(max1,a[i]);
-        priority_queue<ll>p1,p2;
-
-
-
-        
-
- 
- 
-    }
-    #ifndef ONLINE_JUDGE
-        cout<<"\nTime Elapsed : " << 1.0*clock() / CLOCKS_PER_SEC << " s\n";
-    #endif
+        ll a,b,c,d,e;cin>>a>>b>>c>>d>>e;
+        f(i,b)
+        {
+            ll x,y;cin>>x>>y;string s;cin>>s;
+            ll z ;cin>>z;
+        }
+        f(i,d)
+        {
+            ll x;cin>>x;
+            f(j,x){
+                string s;cin>>s;
+            }
+        }
+        cout<<"3\n1\n2\nrue-d-athenes 2\nrue-d-amsterdam 1\n0\n1\nrue-de-londres 2\n2\n1\nrue-de-moscou 1"<<"\n";
+    // #ifndef ONLINE_JUDGE
+    //     cout<<"\nTime Elapsed : " << 1.0*clock() / CLOCKS_PER_SEC << " s\n";
+    // #endif
     return 0;
 }

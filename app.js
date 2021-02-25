@@ -106,6 +106,10 @@ app
   .post(Auth.protect, Auth.restrictTo("user"), review.createReview)
   .delete(review.deleteReview);
 
+
+//GEOLOCATION
+app.route('/tours/tours-within/:distance/centre/:latlng/unit/:unit').get(tour.getTourWithin)
+
 app.all("*", (req, res, next) => {
   // res.status(404).json({
   //     status:"Failed!",

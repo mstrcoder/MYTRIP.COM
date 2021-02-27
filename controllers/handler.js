@@ -16,6 +16,7 @@ exports.deleteOneTour = (Model) =>
 
 exports.getOne = (Model, pop) =>
   catchAsync(async (req, res, next) => {
+    // let query =  Model.find({name:'The Sea Explorer'})
     let query = Model.findById(req.params.id);
     if (pop) query = query.populate(pop);
     const find = await query;
@@ -26,7 +27,7 @@ exports.getOne = (Model, pop) =>
       // console.log("Error is here ");
       return next(new AppError("No Tour Find", 404));
     }
-    // console.log(find);
+    // console.log(find[0].imageCover,find[0].name);
     // if(find.length==0)console.log("Galat hai!")
     res.status(200).json({
       status: "success",
@@ -50,12 +51,14 @@ exports.getAll = (Model) =>
     // features.sorting();
     // features.fields();
     // features.pagination();
-
+    
     const find = await features.query;
-    res.status(200).json({
-      status: "success",
-      body: find,
-    });
+    return find;
+
+    // res.status(200).json({
+    //   status: "success",
+    //   body: find,
+    // });
     // }
     // catch (err) {
     //   res.status(400).json({

@@ -16,6 +16,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const views = require('./views');
 
 
 app.set('view engine','pug')
@@ -46,7 +47,7 @@ app.use(
   })
 );
 //Data Sanitisation
-app.use(express.static(`${__dirname}/starter/public`));
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   // console.log(req.headers);
@@ -116,12 +117,7 @@ app.route('/tours/tours-within/:distance/centre/:latlng/unit/:unit').get(tour.ge
 
 
 //PUGHapp.get('/')
-app.get('/',(req,res)=>{
-  res.status(200).render('base',{
-    tour:'The Forest Hiker', 
-    user:'Ifham'
-  })  
-})
+ app.use('/',views);
 
 app.all("*", (req, res, next) => {
   // res.status(404).json({

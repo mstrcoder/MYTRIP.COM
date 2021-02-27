@@ -32,6 +32,7 @@ exports.topfivecheapesttour = (req, res, next) => {
 // );
 
 const GetAllTour = handler.getAll(Tour);
+// console.log(GetAllTour);
 // const GetAllTour = catchAsync(async (req, res,next) => {
 //   // try {
 //     const features = new API(Tour.find(), req.query)

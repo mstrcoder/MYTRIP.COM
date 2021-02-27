@@ -26,3 +26,15 @@ exports.getTour=catchAsync(async (req, res, next) => {
     res.status(200).render("tour", {tour:tour});
 
 });
+exports.login=catchAsync(async (req, res, next) => {
+  // '5c88fa8cf4afda39709c2955'
+  // const {name}=req.params.id;
+  let query =  Tour.findOne({slug:req.params.id})
+  tour = await query.populate('reviews');
+  // console.log(tour,tour[0]);
+  if (!tour) {
+    return next(new AppError("No Tour Find", 404));
+  }
+    res.status(200).render("tour", {tour:tour});
+
+});

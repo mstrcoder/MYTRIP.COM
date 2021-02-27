@@ -9,12 +9,12 @@ const crypto = require("crypto");
 
 //Generating JWT Token!
 const signToken = (id) => {
-   // create Cokkies After
-//   res.cookies("jwt", token, {
-//     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-//     secure: true,
-//     httpOnly: true,
-//   });
+  // create Cokkies After
+  // res.cookies("jwt", token, {
+  //   expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+  //   secure: true,
+  //   httpOnly: true,
+  // });
   return jwt.sign(
     {
       id: id,
@@ -35,6 +35,11 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
   const token = signToken(newUser._id);
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    // secure: true,
+    httpOnly: true,
+  });
   //   newUser.save();
   res.status(201).json({
     status: "Success!",
@@ -68,6 +73,11 @@ exports.login = catchAsync(async (req, res, next) => {
 
   //if everything ok,send token to client
   const token = signToken(user._id);
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    // secure: true,
+    httpOnly: true,
+  });
   res.status(200).json({
     status: "Success!",
     token,
@@ -95,6 +105,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -207,6 +219,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   //log the user in ,send JWt
   const token = signToken(user._id);
+
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    // secure: true,
+    httpOnly: true,
+  });
   res.status(200).json({
     status: "Success!",
     token,
@@ -234,8 +252,51 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   //log user in send JWT
   const token = signToken(user._id);
+  res.cookie("jwt", token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    // secure: true,
+    httpOnly: true,
+  });
   res.status(200).json({
     status: "Success!",
     token,
   });
-});
+}); 
+
+// exports.isLogeedIn = catchAsync(async (req, res, next) => {
+//   let token;
+//   if (req.cookies.jwt) {
+//     token = req.cookies.jwt;
+
+//     if (!token) {
+//       return next(new AppError("You are not Logged In please login", 401));
+//     }
+//     // console.log(token);
+
+//     //Verification the Token and
+//     const decoded = await promisify(jwt.verify)(
+//       token,
+//       "hello-bhayya-kese-ho-aap"
+//     );
+
+//     // console.log(decoded);
+
+//     // Check if user still Exist
+//     const freshUser = await User.findById(decoded.id);
+
+//     if (!freshUser) {
+//       return next();
+//     }
+//     //if user chenge password after JWT Tokens was issued
+//     if (!freshUser.changePasswordAfter(decoded.iat)) {
+//       return next();
+//     }
+
+//     //There is an Login User
+//     //this way we can store locally any thing PUG template can access to it
+//     res.locals.user= freshUser;
+
+//     next();
+//   }
+//   next();
+// });

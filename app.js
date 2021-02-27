@@ -17,7 +17,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const views = require('./views');
-
+const cookieParser=require('cookie-parser')
 
 app.set('view engine','pug')
 app.set('views',path.join(__dirname,'views'))
@@ -34,6 +34,8 @@ app.use(helmet());
 
 app.use(express.json({ limit: "10kb" }));
 
+
+app.use(cookieParser)
 //DATA Sanitisation Againstb NoSQL query injections
 app.use(mongoSanitize());
 

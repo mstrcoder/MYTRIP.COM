@@ -17,7 +17,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const views = require('./views');
-const cookieParser=require('cookie-parser')
+const Parser=require('cookie-parser')
 
 app.set('view engine','pug')
 app.set('views',path.join(__dirname,'views'))
@@ -35,7 +35,7 @@ app.use(helmet());
 app.use(express.json({ limit: "10kb" }));
 
 
-app.use(cookieParser)
+app.use(Parser())
 //DATA Sanitisation Againstb NoSQL query injections
 app.use(mongoSanitize());
 
@@ -51,11 +51,11 @@ app.use(
 //Data Sanitisation
 app.use(express.static(`${__dirname}/public`));
 
-app.use((req, res, next) => {
-  // console.log(req.headers);
-  next();
-});
-
+// app.use((req, res, next) => {
+//   // console.log(req.headers);
+//   next();
+// });
+console.log("hello form mod1");
 app
   .route("/api/v1/tours/top-5-cheap")
   .get(tour.topfivecheapesttour, tour.GetAllTour);

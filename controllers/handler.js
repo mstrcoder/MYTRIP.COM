@@ -43,6 +43,7 @@ exports.getOne = (Model, pop) =>
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // try {
+
     const features = new API(Model.find(), req.query)
       .sorting()
       .fields()
@@ -53,12 +54,11 @@ exports.getAll = (Model) =>
     // features.pagination();
     
     const find = await features.query;
-    return find;
 
-    // res.status(200).json({
-    //   status: "success",
-    //   body: find,
-    // });
+    res.status(200).json({
+      status: "success",
+      body: find,
+    });
     // }
     // catch (err) {
     //   res.status(400).json({

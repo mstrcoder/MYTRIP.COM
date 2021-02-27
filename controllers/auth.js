@@ -263,40 +263,41 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   });
 }); 
 
-// exports.isLogeedIn = catchAsync(async (req, res, next) => {
-//   let token;
-//   if (req.cookies.jwt) {
-//     token = req.cookies.jwt;
+exports.isLogeedIn = catchAsync(async (req, res, next) => {
+  let token;
+  console.log(req.cookies.jwt);
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt;
 
-//     if (!token) {
-//       return next(new AppError("You are not Logged In please login", 401));
-//     }
-//     // console.log(token);
+    if (!token) {
+      return next(new AppError("You are not Logged In please login", 401));
+    }
+    // console.log(token);
 
-//     //Verification the Token and
-//     const decoded = await promisify(jwt.verify)(
-//       token,
-//       "hello-bhayya-kese-ho-aap"
-//     );
+    //Verification the Token and
+    const decoded = await promisify(jwt.verify)(
+      token,
+      "hello-bhayya-kese-ho-aap"
+    );
 
-//     // console.log(decoded);
+    // console.log(decoded);
 
-//     // Check if user still Exist
-//     const freshUser = await User.findById(decoded.id);
+    // Check if user still Exist
+    const freshUser = await User.findById(decoded.id);
 
-//     if (!freshUser) {
-//       return next();
-//     }
-//     //if user chenge password after JWT Tokens was issued
-//     if (!freshUser.changePasswordAfter(decoded.iat)) {
-//       return next();
-//     }
+    if (!freshUser) {
+      return next();
+    }
+    //if user chenge password after JWT Tokens was issued
+    if (!freshUser.changePasswordAfter(decoded.iat)) {
+      return next();
+    }
 
-//     //There is an Login User
-//     //this way we can store locally any thing PUG template can access to it
-//     res.locals.user= freshUser;
+    //There is an Login User
+    //this way we can store locally any thing PUG template can access to it
+    res.locals.user= freshUser;
 
-//     next();
-//   }
-//   next();
-// });
+    return next();
+  }
+  next();
+});

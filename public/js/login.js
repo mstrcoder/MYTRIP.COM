@@ -1,5 +1,5 @@
 const login =async  (email, password) => {
-    console.log(email,password);
+    // console.log(email,password);
  try {
      //this function will enable user/login request
     const res=await axios({
@@ -10,9 +10,11 @@ const login =async  (email, password) => {
           password
         }
       });
-      console.log("hello");
+      windows.setTimeout(()=>{
+        Location.assign('/')
+      },2000)
  } catch (err){
-     console.log(err.response.data);
+     console.log(err.response.json);
     //  console.log("galat hai pagale!!");
  }
 };

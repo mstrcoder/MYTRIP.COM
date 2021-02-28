@@ -8,7 +8,7 @@ const { decode } = require("querystring");
 const sendEmail = require("./../utilities/email");
 const crypto = require("crypto");
 const User = require("./../models/usermodel");
-const Auth = require('./auth');
+const Auth = require("./auth");
 
 const signToken = (id) => {
   return jwt.sign(
@@ -47,7 +47,6 @@ exports.login = catchAsync(async (req, res, next) => {
   res.status(200).render("login");
   const { email, password } = req.body;
 
- 
   const user = await User.findOne({ email }).select("+password");
   const correct = await user.correctPassword(password, user.password);
   if (!user || !correct) {
@@ -61,4 +60,29 @@ exports.login = catchAsync(async (req, res, next) => {
 
   const tours = await features.query;
   res.status(200).render("overview", { tours: tours });
+});
+exports.getAccount = (req, res) => {
+  console.log("get Account page!");
+  res.status(200).render("account", {
+    title: "Your Account",
+  });
+};
+exports.updateUserData = catchAsync(async (req, res, next) => {
+  console.log('My BODY',req.body);
+  // const updateduser = await User.findByIdAndUpdate(
+  //   req.user.id,
+  //   {
+  //     name: req.body.name,
+  //     email: req.body.email,
+  //   },
+  //   {
+  //     new: true,
+  //     runValidators: true,
+  //   }
+  // );
+
+  // res.status(200).render("account", {
+  //   title: "Your Account",
+  //   user:updateduser
+  // });
 });

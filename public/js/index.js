@@ -4,12 +4,13 @@ import "@babel/polyfill";
 import { login,logout } from "./login";
 import { displayMap } from "./mapbox";
 import {showAlert} from './alert'
-
+import {updateData} from './updateSettings'
 //DOM elements
 const mapBox = document.getElementById("map");
 // console.log('index.js');
-const loginForm = document.querySelector("form");
+const loginForm = document.querySelector(".form--login");
 const logOutBtn = document.querySelector(".nav__el--logout");
+const updateDataa=document.querySelector("form-user-data");
 if (mapBox) {
   const locations = JSON.parse(
     document.getElementById("map").dataset.locations
@@ -30,4 +31,9 @@ if (loginForm) {
 if(logOutBtn)
 {
     logOutBtn.addEventListener('click',logout)
+}
+if(updateDataa)
+{
+  console.log("data updated");
+  updateData();
 }

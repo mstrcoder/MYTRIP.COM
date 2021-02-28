@@ -263,41 +263,54 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   });
 }); 
 
-exports.isLogeedIn = catchAsync(async (req, res, next) => {
+exports.isLogeedIn = (async (req, res, next) => {
+ 
   let token;
-  console.log(req.cookies.jwt);
+  // console.log(req.cookies.jwt);
   if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-
-    if (!token) {
-      return next(new AppError("You are not Logged In please login", 401));
-    }
-    // console.log(token);
-
-    //Verification the Token and
-    const decoded = await promisify(jwt.verify)(
-      token,
-      "hello-bhayya-kese-ho-aap"
-    );
-
-    // console.log(decoded);
-
-    // Check if user still Exist
-    const freshUser = await User.findById(decoded.id);
-
-    if (!freshUser) {
+    try {
+      token = req.cookies.jwt;
+      // console.log(token);
+  
+      //Verification the Token and
+      const decoded = await promisify(jwt.verify)(
+        token,
+        "hello-bhayya-kese-ho-aap"
+      );
+  
+      // console.log(decoded);
+  
+      // Check if user still Exist
+      const freshUser = await User.findById(decoded.id);
+  
+      if (!freshUser) {
+        return next();
+      }
+      //if user chenge password after JWT Tokens was issued
+      if (!freshUser.changePasswordAfter(decoded.iat)) {
+        return next();
+      }
+  
+      //There is an Login User
+      //this way we can store locally any thing PUG template can access to it
+      res.locals.user= freshUser;
+  
+      return next();
+    } catch (err) {
       return next();
     }
-    //if user chenge password after JWT Tokens was issued
-    if (!freshUser.changePasswordAfter(decoded.iat)) {
-      return next();
-    }
-
-    //There is an Login User
-    //this way we can store locally any thing PUG template can access to it
-    res.locals.user= freshUser;
-
-    return next();
+   
   }
   next();
 });
+
+exports.logout=(req,res,next)=>{
+  res.cookie("jwt",'loggesout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    // secure: true,
+    httpOnly: true,
+  });
+  res.status(200).json({
+    status: "success"
+  })
+}

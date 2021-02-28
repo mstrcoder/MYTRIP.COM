@@ -91,6 +91,7 @@ app
 
 app.route("/users/signup").post(Auth.signup);
 app.route("/users/login").post(Auth.login);
+app.route("/users/logout").get(Auth.logout);
 app.route("/users/forgotPassword").post(Auth.forgotPassword);
 app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
 app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
@@ -144,12 +145,23 @@ app.use((err, req, res, next) => {
   // });
   // console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === "development") {
-    res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack,
-    });
+    if(req.originalUrl.startsWith("/api"))
+    {
+      res.status(err.statusCode).json({
+        status: err.status,
+        error: err,
+        message: err.message,
+        stack: err.stack,
+      });
+    }
+    else
+    {
+      res.status(err.statusCode).render('error',{
+        title:'Something Went Wrong', 
+        msg:err.message
+      });
+    }
+  
   } else if (process.env.NODE_ENV === "production") {
     if (err.isOperational) {
       res.status(err.statusCode).json({

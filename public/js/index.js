@@ -1,7 +1,7 @@
 // console.log("Hello from parcel!");
 //this is entry file
 import "@babel/polyfill";
-import { login } from "./login";
+import { login,logout } from "./login";
 import { displayMap } from "./mapbox";
 import {showAlert} from './alert'
 
@@ -9,6 +9,7 @@ import {showAlert} from './alert'
 const mapBox = document.getElementById("map");
 // console.log('index.js');
 const loginForm = document.querySelector("form");
+const logOutBtn = document.querySelector(".nav__el--logout");
 if (mapBox) {
   const locations = JSON.parse(
     document.getElementById("map").dataset.locations
@@ -25,4 +26,8 @@ if (loginForm) {
     const password = document.getElementById("password").value;
     login(email, password);
   });
+}
+if(logOutBtn)
+{
+    logOutBtn.addEventListener('click',logout)
 }

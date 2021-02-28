@@ -1,4 +1,6 @@
-const login =async  (email, password) => {
+import axios from 'axios'
+import {showAlert} from './alert'
+export const login =async  (email, password) => {
     // console.log(email,password);
  try {
      //this function will enable user/login request
@@ -10,18 +12,21 @@ const login =async  (email, password) => {
           password
         }
       });
-      windows.setTimeout(()=>{
-        Location.assign('/')
-      },2000)
+      console.log(res.data.status);
+      if(res.data.status==='Success!')
+      {
+        // console.log('Logged in Successfully');
+        showAlert('Success','Logged in Successfully');
+        windows.setTimeout(()=>{
+          // console.log("hello form location");
+          location.assign('/')
+        },1500)
+      }
+
  } catch (err){
-     console.log(err.response.json);
+  //  console.log('error');
+   showAlert('error',err.response.data.message )
     //  console.log("galat hai pagale!!");
  }
 };
 
-document.querySelector("form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  login( email, password );
-});

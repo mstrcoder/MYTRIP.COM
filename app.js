@@ -18,6 +18,10 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const views = require('./views');
 const Parser=require('cookie-parser')
+const multer = require('multer');
+
+
+
 
 app.set('view engine','pug')
 app.set('views',path.join(__dirname,'views'))
@@ -51,6 +55,7 @@ app.use(
 //Data Sanitisation
 app.use(express.static(`${__dirname}/public`));
 
+const upload=multer({dest:'public/img/users'})
 // app.use((req, res, next) => {
 //   // console.log(req.headers);
 //   next(); 
@@ -95,7 +100,7 @@ app.route("/users/logout").get(Auth.logout);
 app.route("/users/forgotPassword").post(Auth.forgotPassword);
 app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
 app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
-app.route("/users/updateMe").patch(Auth.protect, user.updateMe);
+app.route("/users/updateMe").patch(Auth.protect,user.uploadPhotos, user.updateMe);
 app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
 app.route("/users/me").get(Auth.protect, user.getMe, user.GetOneUser);
 

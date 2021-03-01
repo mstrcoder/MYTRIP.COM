@@ -6,6 +6,26 @@ const AppError = require("./../utilities/apperror");
 const catchAsync = require("./../utilities/asyncerror");
 const User = require("./../models/usermodel");
 const handler=require('./handler')
+const multer = require('multer');
+
+const multerStorage=multer.diskStorage({ 
+  destination:(req,file,cb)=>{
+    cb(null,'public/img/users')
+  },
+  filename:(req,file,cb)=>{
+    const ext=file.mimetype.split('/')[1];
+    cb(null,`user-${req.user.id}-${Date.now()}.${ext}`);
+  }     
+})
+
+const multerFilter=(req,file, cb)=>{
+    //upload file are image or not 
+    if(file.mimetype.startsWith('image')){
+      cb(null,true)
+    }else{cb(new AppError('Not An Image ! Please Upload only Images',400),false)}
+}
+const upload=multer({storage:multerStorage,fileFilter:multerFilter});
+exports.uploadPhotos=upload.single('photo')
 //used to add iddleware
 app.use(express.json());
 const filterObj=(obj, ...allowedFields)=>{
@@ -34,14 +54,20 @@ exports.getMe=(req,res,next) => {
 
 
 exports.updateMe = catchAsync(async(req, res, next) => {
+
+  console.log(req.file,req.body);
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError("This route is for not for password Update", 400));
   }
   // const user=User.
   const filteredBody=filterObj(req.body,'name','email')
-  const updatedUser=await User.findByIdAndUpdate(req.body.id,filteredBody,{new:true,runValidators:true});
+  console.log('we got the bhayya',filteredBody);
+  // console.log(req.user.id);
+  const updatedUser=await User.findByIdAndUpdate(req.user.id,filteredBody,{new:true,runValidators:true});
+  // console.log(updatedUser);
   res.status(200).json({
     status: "success",
+    data:updatedUser
   });
 
 

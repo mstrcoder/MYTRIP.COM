@@ -193,6 +193,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
+
+
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //get USer BAsed On the Token
 
@@ -315,3 +317,22 @@ exports.logout=(req,res,next)=>{
     status: "success"
   })
 }
+
+// exports.updateMe= catchAsync(async (req, res, next) => {
+//   const user=await User.findByIdAndUpdate(
+//       req.user.id,
+//       {
+//         name: req.body.name,
+//         email: req.body.email,
+//       },
+//       {
+//         new: true,
+//         runValidators: true,
+//       }
+//     );
+
+//     res.status(200).json({
+//       status:'success',
+//       body:user
+//     })
+// })

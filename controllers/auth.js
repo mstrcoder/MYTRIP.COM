@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const AppError = require("./../utilities/apperror");
 const { promisify } = require("util");
 const { decode } = require("querystring");
-const sendEmail = require("./../utilities/email");
+const Email = require("./../utilities/email");
 const crypto = require("crypto");
 
 //Generating JWT Token!
@@ -27,13 +27,11 @@ const signToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
-  });
+  // console.log("hello");
+  const newUser = await User.create(req.body);
+  // console.log('created the user',newUser);
+  const url = `${req.protocol}://${req.get("host")}/me`;
+  await new Email(newUser, url).sendWelcome();
   const token = signToken(newUser._id);
   res.cookie("jwt", token, {
     expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
@@ -136,7 +134,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   req.user = freshUser;
-  res.locals.user= freshUser; 
+  res.locals.user = freshUser;
 
   next();
 });
@@ -165,20 +163,23 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   //send it at email
 
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/api/vi/users/resetPassword/${token}}`;
+  // const resetURL = `${req.protocol}://${req.get(
+  //   "host"
+  // )}/api/vi/users/resetPassword/${token}}`;
 
-  const message = `Forgot Your password ?Submit a PATCH request with your new Passowrd amd password Confirm to ${resetURL}.\n `;
+  // const message = `Forgot Your password ?Submit a PATCH request with your new Passowrd amd password Confirm to ${resetURL}.\n `;
 
   try {
     // console.log(resetURL,message);
-    await sendEmail({
-      email: user.email,
-      subject: "Your password Reset Token Valid for 10 min",
-      message: message,
-    });
-
+    // await sendEmail({
+    //   email: user.email,
+    //   subject: "Your password Reset Token Valid for 10 min",
+    //   message: message,
+    // });
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/api/vi/users/resetPassword/${token}}`;
+    await new Email(user, resetUrL).sendPasswordReset();
     res.status(200).json({
       status: "success",
       message: "Token sent on email!",
@@ -192,8 +193,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     );
   }
 });
-
-
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   //get USer BAsed On the Token
@@ -264,28 +263,27 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     status: "Success!",
     token,
   });
-}); 
+});
 
-exports.isLogeedIn = (async (req, res, next) => {
- 
+exports.isLogeedIn = async (req, res, next) => {
   let token;
   // console.log(req.cookies.jwt);
   if (req.cookies.jwt) {
     try {
       token = req.cookies.jwt;
       // console.log(token);
-  
+
       //Verification the Token and
       const decoded = await promisify(jwt.verify)(
         token,
         "hello-bhayya-kese-ho-aap"
       );
-  
+
       // console.log(decoded);
-  
+
       // Check if user still Exist
       const freshUser = await User.findById(decoded.id);
-  
+
       if (!freshUser) {
         return next();
       }
@@ -293,30 +291,29 @@ exports.isLogeedIn = (async (req, res, next) => {
       if (!freshUser.changePasswordAfter(decoded.iat)) {
         return next();
       }
-  
+
       //There is an Login User
       //this way we can store locally any thing PUG template can access to it
-      res.locals.user= freshUser;
-  
+      res.locals.user = freshUser;
+
       return next();
     } catch (err) {
       return next();
     }
-   
   }
   next();
-});
+};
 
-exports.logout=(req,res,next)=>{
-  res.cookie("jwt",'loggesout', {
+exports.logout = (req, res, next) => {
+  res.cookie("jwt", "loggesout", {
     expires: new Date(Date.now() + 10 * 1000),
     // secure: true,
     httpOnly: true,
   });
   res.status(200).json({
-    status: "success"
-  })
-}
+    status: "success",
+  });
+};
 
 // exports.updateMe= catchAsync(async (req, res, next) => {
 //   const user=await User.findByIdAndUpdate(

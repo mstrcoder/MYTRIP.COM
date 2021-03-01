@@ -86,6 +86,7 @@ app
   .patch(
     Auth.protect,
     Auth.restrictTo("admin", "lead-guide"),
+    tour.uploadTourImages,tour.resizeTourImages,
     tour.UpdateOneTour
   )
   .delete(
@@ -100,7 +101,7 @@ app.route("/users/logout").get(Auth.logout);
 app.route("/users/forgotPassword").post(Auth.forgotPassword);
 app.route("/users/resetPassword/:token").patch(Auth.resetPassword);
 app.route("/users/updateMyPassword").patch(Auth.protect, Auth.updatePassword);
-app.route("/users/updateMe").patch(Auth.protect,user.uploadPhotos, user.updateMe);
+app.route("/users/updateMe").patch(Auth.protect,user.uploadPhotos,user.resizePhoto, user.updateMe);
 app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
 app.route("/users/me").get(Auth.protect, user.getMe, user.GetOneUser);
 

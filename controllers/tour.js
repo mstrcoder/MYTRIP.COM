@@ -7,9 +7,19 @@ const API = require("./../utilities/apifeatures");
 const catchAsync = require("./../utilities/asyncerror");
 const AppError = require("./../utilities/apperror");
 const handler = require("./handler");
+const multer = require('multer');
 //used to add iddleware
 app.use(express.json());
-
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  //upload file are image or not
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("Not An Image ! Please Upload only Images", 400), false);
+  }
+};
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 //creaing a middle ware for the top 5 cheapest Tour
 exports.topfivecheapesttour = (req, res, next) => {
   req.query.limit = "5";
@@ -17,6 +27,39 @@ exports.topfivecheapesttour = (req, res, next) => {
   req.query.fields = "name,price,ratingAverage,summary";
   next();
 };
+
+exports.uploadTourImages=upload.fields([
+  {name:'imageCover',maxCount:1},
+  {name:'images',maxCount:3}
+])
+
+
+exports.resizeTourImages=async (req,res,next)=>{
+  if(!req.files.imageCover||!req.files.images)return next();
+  //Cover Image
+  const imageCoverFilename=`tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+  await sharp(req.file.imageCover[0].buffer)
+  .resize(2000, 1333)
+  .toFormat("jpeg")
+  .jpeg({ quality: 90 })
+  .toFile(`public/img/tours/${imageCoverFilename}`);
+  req.body.imageCover=imageCoverFilename;
+
+  //IMAGES
+  req.body.images=[];
+  await Promise.all(req.files.images.map(async (file,i) => {
+    const filename=`tour-${req.params.id}-${Date.now()}-${i+1}.jpeg`;
+    await sharp(file.buffer)
+    .resize(2000, 1333)
+    .toFormat("jpeg")
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${filename}`);
+    req.body.images.push(filename)
+  }));
+  next();
+}
+// upload.single('image')
+// upload.array('images',5)
 
 ///creating own middle ware
 

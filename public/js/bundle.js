@@ -8568,7 +8568,7 @@ var logout = /*#__PURE__*/function () {
 
             if (res.data.status === 'success') {
               console.log('Logged out Successfully');
-              location.reload(true);
+              location.assign("http://127.0.0.1:5000/");
             }
 
             _context2.next = 11;
@@ -9014,13 +9014,14 @@ if (logOutBtn) {
 if (updateDataa) {
   updateDataa.addEventListener("submit", function (e) {
     e.preventDefault();
-    var name = document.getElementById("name").value;
-    var email = document.getElementById("email").value; // console.log(name,email);
+    var from = new FormData();
+    form.append('name', document.getElementById("name").value);
+    form.append('email', document.getElementById("email").value);
+    form.append('photo', document.getElementById("photo").files[0]); // const name = 
+    // const email = document.getElementById("email").value;
+    // console.log(name,email);
 
-    (0, _updateSettings.updateData)({
-      name: name,
-      email: email
-    }, "data");
+    (0, _updateSettings.updateData)(from, "data");
   });
 }
 

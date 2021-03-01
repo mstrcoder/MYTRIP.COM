@@ -41,7 +41,7 @@ export const logout=async ()=>{
     if(res.data.status==='success')
     {
       console.log('Logged out Successfully');
-      location.reload(true)
+      location.assign("http://127.0.0.1:5000/");
     }
   } catch (err) {
     showAlert('error',err.response.data.message )

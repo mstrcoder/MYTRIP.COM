@@ -35,10 +35,14 @@ if (logOutBtn) {
 if (updateDataa) {
   updateDataa.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
+    const from=new FormData();
+    form.append('name',document.getElementById("name").value)
+    form.append('email',document.getElementById("email").value)
+    form.append('photo',document.getElementById("photo").files[0])
+    // const name = 
+    // const email = document.getElementById("email").value;
     // console.log(name,email);
-    updateData({ name, email }, "data");
+    updateData(from, "data");
   });
 }
 if (updatePass) {

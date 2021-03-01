@@ -14,7 +14,10 @@ const UserSchema = new mongoose.Schema({
     lowerCase: true,
     validate: [validator.isEmail, "Please provide valid Email"],
   },
-  photo: String,
+  photo: {
+    type:String,
+    default:'default.jpg'
+  },
   role: {
     type: String,
     enum: ["user", "guide", "lead-guide", "admin"],

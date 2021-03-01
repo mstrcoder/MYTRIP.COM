@@ -168,18 +168,22 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // )}/api/vi/users/resetPassword/${token}}`;
 
   // const message = `Forgot Your password ?Submit a PATCH request with your new Passowrd amd password Confirm to ${resetURL}.\n `;
-
+  // console.log('bahara hai',user);
   try {
-    // console.log(resetURL,message);
+    // console.log(resetURL,message);z`
     // await sendEmail({
     //   email: user.email,
     //   subject: "Your password Reset Token Valid for 10 min",
     //   message: message,
     // });
+    // console.log('andar hai',user);
     const resetURL = `${req.protocol}://${req.get(
       "host"
-    )}/api/vi/users/resetPassword/${token}}`;
-    await new Email(user, resetUrL).sendPasswordReset();
+    )}/users/resetPassword/${token}}`;
+  
+    await new Email(user, resetURL).password();
+      // console.log(resetURL);
+  
     res.status(200).json({
       status: "success",
       message: "Token sent on email!",

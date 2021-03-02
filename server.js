@@ -32,7 +32,7 @@ mongoose
 //   .catch((err) => {
 //     console.log("error aagya!  ", err);
 //   });
-const port=5000
+const port=process.env.PORT|5000;
 const server=app.listen(port, () => {
   console.log("server listening on Port 5000");
 });

@@ -1,0 +1,15 @@
+extends base
+
+block content
+  main.main
+    .login-form
+      h2.heading-secondary.ma-bt-lg Review
+      form.form.form--review
+        .form__group
+          label.form__label(for='review') Write The Review
+          input#review.form__input(type='review', placeholder='you@example.com', required)
+        .form__group.ma-bt-md
+          label.form__label(for='rating') Rating
+          input#rating.form__input(type='ratinh', placeholder='', required, maxlength='1')
+        .form__group
+          button.btn.btn--green Submit

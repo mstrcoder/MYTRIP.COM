@@ -28,6 +28,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   // console.log("hello");
+  console.log(req.body);
   const newUser = await User.create(req.body);
   // console.log('created the user',newUser);
   const url = `${req.protocol}://${req.get("host")}/me`;

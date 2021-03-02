@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const path = require('path');
 const tour = require("./controllers/tour");
 const user = require("./controllers/user");
+const booking = require("./controllers/booking");
 const review = require("./controllers/review");
 const querystring = require("querystring");
 const AppError = require("./utilities/apperror");
@@ -105,6 +106,7 @@ app.route("/users/updateMe").patch(Auth.protect,user.uploadPhotos,user.resizePho
 app.route("/users/deleteMe").patch(Auth.protect, user.deleteMe);
 app.route("/users/me").get(Auth.protect, user.getMe, user.GetOneUser);
 
+app.route('/bookings/checkout-session/:tourId').get(Auth.protect,booking.getCheckoutSession)
 //now for review
 app
   .route("/review")

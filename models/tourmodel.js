@@ -155,7 +155,7 @@ TourSchema.pre("aggregate", function (next) {
 
 //Populates Middleware
 TourSchema.pre(/^find/, function (next) {
-  console.log("get Guides!!!");
+  // console.log("get Guides!!!");
   this.populate({
     path:'guides',
     select:'-__v -passwordChangedAt'

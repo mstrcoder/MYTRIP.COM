@@ -42,3 +42,5 @@ block content
                             | 
                             span.card__footer-text= `rating (${tour.ratingsQuantity})`
                         a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+                        if user
+                            a.btn.btn--green.btn--small(href=`/tour/review/${tour.slug}`) Review

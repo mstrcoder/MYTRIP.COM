@@ -10,6 +10,7 @@ router.get("/login",Auth.isLogeedIn, views.login);
 router.get("/signup",Auth.isLogeedIn, views.signup);
 router.get("/me", Auth.protect,views.getAccount);
 router.get("/my-tours", Auth.protect,views.getMyTour);
+router.get('/tour/review/:tourId',Auth.isLogeedIn,views.writeReview)
 // router.get("/my-tours", Auth.protect,views.getMyTour);
 
 router.post('/submit-user-data',Auth.protect,views.updateUserData)

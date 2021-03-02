@@ -119,3 +119,21 @@ exports.getMyTour=catchAsync(async (req, res, next) => {
 
 
 });
+exports.writeReview=catchAsync(async (req, res, next) => {
+  res.status(200).render("review");
+  // const { email, password } = req.body;
+
+  // const user = await User.findOne({ email }).select("+password");
+  // const correct = await user.correctPassword(password, user.password);
+  // if (!user || !correct) {
+  //   return next(new AppError("Incorrect Email and Password", 401));
+  // }
+  // const token = signToken(user._id);
+  // const features = new API(Tour.find(), req.query)
+  //   .sorting()
+  //   .fields()
+  //   .pagination();
+
+  // const tours = await features.query;
+  // res.status(200).render("overview", { tours: tours });
+});

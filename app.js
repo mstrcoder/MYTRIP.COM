@@ -109,10 +109,10 @@ app.route("/users/me").get(Auth.protect, user.getMe, user.GetOneUser);
 app.route('/bookings/checkout-session/:tourId').get(Auth.protect,booking.getCheckoutSession)
 //now for review
 app
-  .route("/review")
+  .route("/review/:TourId")
   .get(review.getAllReview)
   .post(Auth.protect, Auth.restrictTo("user"), review.createReview);
-app.route("/review/:TourId").get(review.getReview);
+app.route("tour/review/:TourId").get(review.getReview);
 
 // .get(review.getAllreview)
 

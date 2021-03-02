@@ -7,6 +7,7 @@ import { showAlert } from "./alert";
 import { updateData } from "./updateSettings";
 import {bookTour1}  from './stripe'
 import {signup} from './signup'
+import {reviewAdd} from './review'
 //DOM elements
 const mapBox = document.getElementById("map");
 // console.log('index.js');
@@ -16,6 +17,7 @@ const logOutBtn = document.querySelector(".nav__el--logout");
 const updateDataa = document.querySelector(".form-user-data");
 const updatePass = document.querySelector(".form-user-password ");
 const bookTour=document.getElementById('book-tour')
+const Review=document.querySelector('.form--review')
 if (mapBox) {
   const locations = JSON.parse(
     document.getElementById("map").dataset.locations
@@ -24,6 +26,20 @@ if (mapBox) {
   displayMap(locations);
 }
 
+if(Review)
+{
+  // console.log(window.location.href.split('/')[5]);
+  Review.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const review=document.getElementById('review').value;
+    const rating=document.getElementById('rating').value;
+    console.log(review,rating);
+  let value=window.location.href.split('/')[5];
+  // value=value.split('-').join(' ');
+  // console.log(value);
+    reviewAdd(value,review, rating);
+  })
+}
 if (loginForm) {
   // console.log("login form open");
   loginForm.addEventListener("submit", (e) => {
@@ -89,3 +105,4 @@ if(bookTour)
     bookTour1(tourId)
   })
 }
+

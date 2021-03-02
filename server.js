@@ -38,7 +38,7 @@ const server=app.listen(port, () => {
 });
 
 process.on("unhandledRejection", (err) => {
-  console.log(err.name, err.message);
+  // console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
   });
@@ -46,7 +46,7 @@ process.on("unhandledRejection", (err) => {
 
 
 process.on("uncaughtException", (err) => {
-  console.log(err.name, err.message);
+  // console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
   });

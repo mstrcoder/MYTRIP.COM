@@ -6,20 +6,20 @@ export const login =async  (email, password) => {
      //this function will enable user/login request
     const res=await axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/users/login",
+        url: "/users/login",
         data: {
           email,
           password
         }
       });
-      console.log(res.data.status);
+      // console.log(res.data.status);
       if(res.data.status==='Success!')
       {
         // console.log('Logged in Successfully');
         showAlert('Success','Logged in Successfully');
       //   windows.setTimeout(()=>{
       //     // console.log("hello form location");
-          location.assign("http://127.0.0.1:5000/");
+          location.assign("/");
       //   },0)
       }
 
@@ -35,16 +35,17 @@ export const logout=async ()=>{
   try {
     const res=await axios({
       method: "GET",
-      url: "http://127.0.0.1:5000/users/logout",
+      url: "/users/logout",
     });
-    console.log(res.data.status,'logout Request');
+
     if(res.data.status==='success')
     {
       console.log('Logged out Successfully');
-      location.assign("http://127.0.0.1:5000/");
+      location.assign("/");
     }
   } catch (err) {
     showAlert('error',err.response.data.message )
   }
 }
+// http://127.0.0.1:5000
 

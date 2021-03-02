@@ -22,7 +22,7 @@ if (mapBox) {
   const locations = JSON.parse(
     document.getElementById("map").dataset.locations
   );
-  console.log(locations);
+  // console.log(locations);
   displayMap(locations);
 }
 
@@ -33,7 +33,7 @@ if(Review)
     e.preventDefault();
     const review=document.getElementById('review').value;
     const rating=document.getElementById('rating').value;
-    console.log(review,rating);
+    // console.log(review,rating);
   let value=window.location.href.split('/')[5];
   // value=value.split('-').join(' ');
   // console.log(value);
@@ -97,11 +97,11 @@ if (updatePass) {
 
 if(bookTour)
 {
-  console.log('clicked');
+  // console.log('clicked');
   bookTour.addEventListener('click',e=>{
     e.target.textContext='Processing...'
     const tourId=e.target.dataset.tourId;
-    console.log(tourId);
+    // console.log(tourId);
     bookTour1(tourId)
   })
 }

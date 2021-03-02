@@ -6,7 +6,7 @@ export const signup =async  (name,email, password,passwordConfirm) => {
      //this function will enable user/login request
     const res=await axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/users/signup",
+        url: "/users/signup",
         data: {
             name,
           email,
@@ -14,14 +14,14 @@ export const signup =async  (name,email, password,passwordConfirm) => {
           passwordConfirm
         }
       });
-      console.log(res.data.status);
+      // console.log(res.data.status);
       if(res.data.status==='Success!')
       {
         // console.log('Logged in Successfully');
         showAlert('Success','Logged in Successfully');
       //   windows.setTimeout(()=>{
       //     // console.log("hello form location");
-          location.assign("http://127.0.0.1:5000/");
+          location.assign("/");
       //   },0)
       }
 

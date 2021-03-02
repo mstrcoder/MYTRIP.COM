@@ -20,6 +20,7 @@ const hpp = require("hpp");
 const views = require('./views');
 const Parser=require('cookie-parser')
 const multer = require('multer');
+const compression = require('compression');
 
 
 
@@ -47,6 +48,7 @@ app.use(mongoSanitize());
 //DATA sanitization against xss
 app.use(xss());
 
+app.use(compression())
 //hppapp.use(express.)
 app.use(
   hpp({

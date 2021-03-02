@@ -24,7 +24,7 @@ const signToken = (id) => {
 };
 
 exports.getOverview = catchAsync(async (req, res, next) => {
-  console.log("HELLO11111");
+  // console.log("HELLO11111");
   const features = new API(Tour.find(), req.query)
     .sorting()
     .fields()
@@ -81,13 +81,13 @@ exports.signup = catchAsync(async (req, res, next) => {
   // res.status(200).render("overview", { tours: tours });
 });
 exports.getAccount = (req, res) => {
-  console.log("get Account page!");
+  // console.log("get Account page!");
   res.status(200).render("account", {
     title: "Your Account",
   });
 };
 exports.updateUserData = catchAsync(async (req, res, next) => {
-  console.log('My BODY',req.body);
+  // console.log('My BODY',req.body);
   // const updateduser = await User.findByIdAndUpdate(
   //   req.user.id,
   //   {
@@ -110,7 +110,7 @@ exports.getMyTour=catchAsync(async (req, res, next) => {
   // console.log('booking is done',booking); 
   const tourIDs=booking.map(el=>el.tour)
   const tours=await Tour.find({_id:{$in:tourIDs}});
-  console.log(tours);
+  // console.log(tours);
   res.status(200).render('overview',{
     title:'My tours',
     tours

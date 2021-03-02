@@ -6,20 +6,20 @@ export const reviewAdd =async  (name,review, rating) => {
      //this function will enable user/login request
     const res=await axios({
         method: "POST",
-        url: `http://127.0.0.1:5000/review/${name}`,
+        url: `/review/${name}`,
         data: {
           review,
           rating
         }
       });
-      console.log(res.data.status);
+      // console.log(res.data.status);
       if(res.data.status==='Success!'||res.data.status==='success')
       {
         // console.log('Logged in Successfully');
         showAlert('Success','Review Saved Succesfully');
       //   windows.setTimeout(()=>{
       //     // console.log("hello form location");
-          location.assign("http://127.0.0.1:5000/");
+          location.assign("/");
       //   },0)
       }
 

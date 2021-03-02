@@ -51,5 +51,12 @@ process.on("uncaughtException", (err) => {
     process.exit(1);
   });
 });
+
+process.on('SIGTERM',()=>{
+  console.log('Sigterm Recived')
+    // console.log(err.name, err.message);
+    server.close(() => {
+    });
+})
 // console.log(x);
 

@@ -21,7 +21,7 @@ const views = require('./views');
 const Parser=require('cookie-parser')
 const multer = require('multer');
 const compression = require('compression');
-
+const cors = require('cors');
 
 
 
@@ -37,7 +37,7 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 //secure the HTTP resquest Header
 app.use(helmet());
-
+app.use(cors())
 app.use(express.json({ limit: "10kb" }));
 
 app.use(express.urlencoded({extended:true}))

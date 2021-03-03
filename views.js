@@ -4,7 +4,7 @@ const router = express.Router();
 const Auth= require("./controllers/auth");
 const booking= require("./controllers/booking");
 // router.use(Auth.isLogeedIn);
-router.get("/", booking.createBookingCheckout,Auth.isLogeedIn,views.getOverview);
+router.get("/",Auth.isLogeedIn,views.getOverview);
 router.get("/tour/:id", Auth.isLogeedIn,views.getTour);
 router.get("/login",Auth.isLogeedIn, views.login);
 router.get("/signup",Auth.isLogeedIn, views.signup);

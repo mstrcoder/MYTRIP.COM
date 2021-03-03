@@ -22,7 +22,7 @@ const Parser=require('cookie-parser')
 const multer = require('multer');
 const compression = require('compression');
 const cors = require('cors');
-
+const bodyParser= require('body-parser')
 
 
 app.set('view engine','pug')
@@ -35,6 +35,9 @@ const limiter = rateLimit({
   message: "Too MAny Request from This IP",
 });
 app.use("/api", limiter);
+
+//we dont want to parse into 
+app.post('/webhook-checkout',bodyParser.raw({type:'application/json'}),booking.webhookCheckout)
 //secure the HTTP resquest Header
 app.use(helmet());
 app.use(cors())

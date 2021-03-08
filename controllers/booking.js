@@ -7,6 +7,7 @@ const stripe = require("stripe")(
   "sk_test_51IQENaC2RoBCLRqQAZPhdIqyGqAJjAX2C3M3TRGFYM6uZwN9gaSTWN1kwfCHKlC7W0ESGDgt9zz3oy2MoH61vyYh00sNFMlPaM"
 );
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+  
   const tour = await Tour.findById(req.params.tourId);
 //   console.log(tour);  
   const session = await stripe.checkout.sessions.create({
@@ -27,7 +28,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
       },
     ],
   });
-//   console.log("Kya Baat hai"); 
+//   console.log("Kya Baat hai");
+res.setHeader('Content-Security-Policy', "script-src 'self'") ;
   res.status(200).json({
     status: "Succcess",
     session,

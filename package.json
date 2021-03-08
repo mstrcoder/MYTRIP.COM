@@ -35,6 +35,7 @@
     "parser": "^0.1.4",
     "pug": "^3.0.0",
     "querystring": "^0.2.1",
+    "sanitize-html": "^2.3.2",
     "sharp": "^0.27.2",
     "slugify": "^1.4.6",
     "stripe": "^8.137.0",
